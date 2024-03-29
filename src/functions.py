@@ -26,8 +26,8 @@ R_con={
     "6":"AGAAAAAAAAAAAAAA",
     "7":"CAAAAAAAAAAAAAAA",
     "8":"GAAAAAAAAAAAAAAA",
-    "9":"ACGUAAAAAAAAAAAA",
-    "10":"AUCGAAAAAAAAAAAA"
+    "9":"ACGTAAAAAAAAAAAA",
+    "10":"ATCGAAAAAAAAAAAA"
 }
 
 def text_to_128bit_binary_blocks(text):
@@ -78,7 +78,7 @@ def get_substitution(dna_key):
     position=move*4
     return sbox_value[position:position+4:1]
 
-def key_expansion(key,round):
+def key_expansion(key,round,resa,resb,resc,resd):
     keys=[]
     rotated= key[16:] + key[:16]
     sub_key= [key[i:i+16] for i in range(0,64,16)]
@@ -93,7 +93,6 @@ def key_expansion(key,round):
     res3=""
     res4=""
     for k,element in enumerate(subparts):
-        print(element)
         temp=""
         for ele in element:
             temp+=get_substitution(ele)
@@ -103,20 +102,30 @@ def key_expansion(key,round):
             xored+=dna_xor(row[i],temp[i])
         if k==0:
             for j in range(0,16):
-                res1+=dna_xor(xored[j],first[j])
+                if round == "1":
+                    res1+=dna_xor(xored[j],first[j])
+                else:
+                    res1+=dna_xor(xored[j],resa[j])
     keys.append(res1)
     
     for j in range(0,16):
-        res2+=dna_xor(second[j],res1[j])
+        if round == "1":
+            res2+=dna_xor(second[j],res1[j])
+        else:
+            res2+=dna_xor(resb[j],res1[j])
     keys.append(res2)
 
     for j in range(0,16):
-        res3+=dna_xor(third[j],res2[j])
+        if round == "1":
+            res3+=dna_xor(third[j],res2[j])
+        else:
+            res3+=dna_xor(resc[j],res2[j])
     keys.append(res3)
         
     for j in range(0,16):
-        res4+=dna_xor(fourth[j],res3[j])
+        if round == "1":
+            res4+=dna_xor(fourth[j],res3[j])
+        else:
+            res4+=dna_xor(resd[j],res3[j])
     keys.append(res4)
-
-    print(keys)
     return keys

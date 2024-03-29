@@ -10,8 +10,33 @@ dna_key = key
 
 #dna_key = binary_to_dna(binary_key)
 print(f"DNA Key: {dna_key}")
+rounds=10
+keys_list=[]
+res1=""
+res2=""
+res3=""
+res4=""
+val = dna_key
+prev=""
 
-dna_keys = key_expansion(dna_key,"1")
+for i in range(1,rounds+1):
+    if i==1:
+        result = key_expansion(val,str(i),res1,res2,res3,res4)
+        res1=result[0]
+        res2=result[1]
+        res3=result[2]
+        res4=result[3]
+        prev = res1+res2+res3+res4
+        print(prev + "\n")
+    else:
+        #break
+        result = key_expansion(prev,str(i),res1,res2,res3,res4)
+        res1=result[0]
+        res2=result[1]
+        res3=result[2]
+        res4=result[3]
+        prev = res1+res2+res3+res4
+        print(prev + "\n")
 
 
 # for block in binary_blocks:
