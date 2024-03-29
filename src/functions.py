@@ -1,3 +1,35 @@
+dna_sbox = {
+    "AA": "CGATCTTACTCTCTGTTTAGCGGTCGTTTACCATAAAAACCGCTAGGTTTTGTCCTGGGTCTCG",
+    "AC": "TAGGGAAGTAGCCTTCTTGGCCGCCACTTTAAGGTCTCCAGGAGGGTTGCTAGGCACTAGTAAA",
+    "AG": "GTCTTTTCGCATAGCGATCGATTTTTCTTATAATCAGGCCTGCCTTACCTACTCGAATACACCC",
+    "AT": "AACATACTAGATTAATACGAGCCGAACCGCGGAACTACAGGAAATGAGTGGTAGCTGTAGCTCC",
+    "CA": "AAGCGAATAGTAACGGACGTCGTGCCGGGGAACCAGATGTTCCGGTATAGGCTGATAGTTGACA",
+    "CC": "CCATTCACAAAATGTCAGAATTTAGTACCCGTCGGGTAGTGTTGATGCCAGGCATACCGATATT",
+    "CG": "TCAATGTTGGGGTTGTCAATCATCATATGACCCACCTTGCAAAGCTTTCCAAATTAGCTTGGGA",
+    "CT": "CCACGGATCAAAGATTGCAGGCTCATGATTCCGTTAGTCGTCGGAGACACAATTTTTTATTCAG",
+    "GA": "TATCAATAACATTGTACCTTGCCTCACAACCTTACAGGCTCTTGATTCCGCACCTCACGCCTAT",
+    "GC": "CGAAGAACCATTTCTAAGAGAGGGGCAAGAGACACGTGTGGTGAACCATCTGCCTGAAGTTCGT",
+    "GG": "TGAAATAGATGGAAGGCAGCAACGAGCACCTATAAGTCATGGTACGAGGCACGCCCTGCACTGC",
+    "GT": "TGCTTAGAATCTCGTCGATCTCCCCATGGGGCCGTACCCGTTCATGGGCGCCCTGGGGTGAAGA",
+    "TA": "GTGGCTGAAGCCAGTGACTAGGCGGTCATACGTGGATCTCCTCAACTTCAGTGTTCGAGTGAGG",
+    "TC": "CTAAATTGGTCCCGCGCAGAAAATTTCGAATGCGACATCCCCCTGTGCGACGTAACACTCGCTG",
+    "TG": "TGACTTGAGCGAACACCGGCTCGCGATGGCCAGCGTACTGGACTTGGCTATGCCCCAGGATCTT",
+    "TT": "GATAGGACGAGCAATCGTTTTGCGCAAGCGGACAACGCGCAGTCAATTGTAACCCAGTGTACCG"
+}
+
+R_con={
+    "1":"AAACAAAAAAAAAAAA",
+    "2":"AAAGAAAAAAAAAAAA",
+    "3":"AACAAAAAAAAAAAAA",
+    "4":"AAGAAAAAAAAAAAAA",
+    "5":"ACAAAAAAAAAAAAAA",
+    "6":"AGAAAAAAAAAAAAAA",
+    "7":"CAAAAAAAAAAAAAAA",
+    "8":"GAAAAAAAAAAAAAAA",
+    "9":"ACGUAAAAAAAAAAAA",
+    "10":"AUCGAAAAAAAAAAAA"
+}
+
 def text_to_128bit_binary_blocks(text):
     binary_data = ''.join(format(ord(char), '08b') for char in text)
     padding_length = 128 - (len(binary_data) % 128)
@@ -33,5 +65,58 @@ def dna_xor(dna1, dna2):
 
     return 'Error'
 
-def dna_rotword(word):
-    return word[2:] + word[:2]
+def move_pointer(dna_input):
+    first_character_moves = {"A":0,"C":4,"G":8,"T":12}
+    second_character_moves = {"A":0,"C":1,"G":2,"T":3}
+    total_moves = first_character_moves[dna_input[2]]+second_character_moves[dna_input[3]]
+    return total_moves
+
+def get_substitution(dna_key):
+    sbox_key = dna_key[:2]
+    move=move_pointer(dna_key)
+    sbox_value = dna_sbox[sbox_key]
+    position=move*4
+    return sbox_value[position:position+4:1]
+
+def key_expansion(key,round):
+    keys=[]
+    rotated= key[16:] + key[:16]
+    sub_key= [key[i:i+16] for i in range(0,64,16)]
+    parts=[rotated[i:i+16] for i in range(0,64,16)]
+    subparts=[[part[j:j+4] for j in range(0,16,4)] for part in parts]
+    first=sub_key[0]
+    second=sub_key[1]
+    third=sub_key[2]
+    fourth=sub_key[3]
+    res1=""
+    res2=""
+    res3=""
+    res4=""
+    for k,element in enumerate(subparts):
+        print(element)
+        temp=""
+        for ele in element:
+            temp+=get_substitution(ele)
+        row=R_con[round]
+        xored=""
+        for i in range(0,16):
+            xored+=dna_xor(row[i],temp[i])
+        if k==0:
+            for j in range(0,16):
+                res1+=dna_xor(xored[j],first[j])
+    keys.append(res1)
+    
+    for j in range(0,16):
+        res2+=dna_xor(second[j],res1[j])
+    keys.append(res2)
+
+    for j in range(0,16):
+        res3+=dna_xor(third[j],res2[j])
+    keys.append(res3)
+        
+    for j in range(0,16):
+        res4+=dna_xor(fourth[j],res3[j])
+    keys.append(res4)
+
+    print(keys)
+    return keys
