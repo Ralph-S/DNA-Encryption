@@ -37,10 +37,3 @@ for i in range(1,rounds+1):
         res4=result[3]
         prev = res1+res2+res3+res4
         print(prev + "\n")
-
-
-# for block in binary_blocks:
-#     print(block)
-#     dna_input = binary_to_dna(block)
-#     print(f"DNA Input: {dna_input}")
-#     print("\n")

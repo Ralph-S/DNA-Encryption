@@ -46,18 +46,18 @@ def binary_to_dna(binary_input):
 
 def dna_xor(dna1, dna2):
     inverse_map = {'A': 'T', 'T': 'A', 'C': 'G', 'G': 'C'}
-    # Rule 1: If the two inputs are the same, output is 'A'
+    # Rule 1
     if dna1 == dna2:
         return 'A'
-    # Rule 2: If one of the inputs is the inverse of the other, output is 'T'
+    # Rule 2
     if inverse_map[dna1] == dna2 or inverse_map[dna2] == dna1:
         return 'T'
-    # Rule 3: If one of the inputs is 'A', output is the other DNA base
+    # Rule 3
     if dna1 == 'A':
         return dna2
     if dna2 == 'A':
         return dna1
-    # Rule 4: If one of the inputs is 'T', output is the inverse of the other DNA base
+    # Rule 4
     if dna1 == 'T':
         return inverse_map[dna2]
     if dna2 == 'T':
@@ -80,10 +80,10 @@ def get_substitution(dna_key):
 
 def key_expansion(key,round,resa,resb,resc,resd):
     keys=[]
-    rotated= key[16:] + key[:16]
     sub_key= [key[i:i+16] for i in range(0,64,16)]
-    parts=[rotated[i:i+16] for i in range(0,64,16)]
-    subparts=[[part[j:j+4] for j in range(0,16,4)] for part in parts]
+    to_rotate = sub_key[3]
+    rotated = to_rotate[4:] + to_rotate[:4]
+    rotated_bytes = [rotated[i:i+4] for i in range(0,16,4)]
     first=sub_key[0]
     second=sub_key[1]
     third=sub_key[2]
@@ -92,20 +92,18 @@ def key_expansion(key,round,resa,resb,resc,resd):
     res2=""
     res3=""
     res4=""
-    for k,element in enumerate(subparts):
-        temp=""
-        for ele in element:
-            temp+=get_substitution(ele)
+    temp=""
+    for k,element in enumerate(rotated_bytes):
+        temp+=get_substitution(element)
         row=R_con[round]
-        xored=""
-        for i in range(0,16):
-            xored+=dna_xor(row[i],temp[i])
-        if k==0:
-            for j in range(0,16):
-                if round == "1":
-                    res1+=dna_xor(xored[j],first[j])
-                else:
-                    res1+=dna_xor(xored[j],resa[j])
+    xored=""
+    for i in range(0,16):
+        xored+=dna_xor(row[i],temp[i])
+    for j in range(0,16):
+        if round == "1":
+            res1+=dna_xor(xored[j],first[j])
+        else:
+            res1+=dna_xor(xored[j],resa[j])
     keys.append(res1)
     
     for j in range(0,16):
