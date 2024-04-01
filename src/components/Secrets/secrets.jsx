@@ -1,69 +1,53 @@
 import { useState, useEffect } from 'react';
-import { Container,Box, List, ListItem, ListItemText,Paper, Typography, Grid, TextField, Button, Card, CardContent } from '@mui/material';
+import { Container, Box, List, ListItem, ListItemText, Paper, Typography, Grid, TextField, Button, Card, CardContent } from '@mui/material';
 import VpnKeyIcon from '@mui/icons-material/VpnKey';
+import axios from 'axios';
 
 function Secrets() {
   const [originalSecrets, setOriginalSecrets] = useState([]);
   const [encryptedSecrets, setEncryptedSecrets] = useState([]);
   const [newSecret, setNewSecret] = useState('');
-  
+
   useEffect(() => {
-    
-    // const fetchSecrets = async () => {
-    //   try {
-    //     const originalResponse = await axios.get('/original-secrets');
-    //     setOriginalSecrets(originalResponse.data);
-    
-    //     const encryptedResponse = await axios.get('/encrypted-secrets');
-    //     setEncryptedSecrets(encryptedResponse.data);
-    //   } catch (error) {
-    //     console.error('Error fetching secrets:', error);
-    //   }
-    // };
-    
-    // fetchSecrets();
-    
     // Dummy data for original secrets
     const dummyOriginalSecrets = ['Original Secret 1', 'Original Secret 2', 'Original Secret 3'];
     setOriginalSecrets(dummyOriginalSecrets);
-    
+
     // Dummy data for encrypted secrets
     const dummyEncryptedSecrets = ['Encrypted Secret 1', 'Encrypted Secret 2', 'Encrypted Secret 3'];
     setEncryptedSecrets(dummyEncryptedSecrets);
   }, []);
-  
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    // axios.post('/post-secret', { secret: newSecret })
-    //   .then(response => {
-    //     if (response.status === 200) {
-    //       setNewSecret('');
-    //       fetchSecrets();
-    //     } else {
-    //       console.error('Failed to post secret');
-    //     }
-    //   })
-    //   .catch(error => {
-    //     console.error('Error posting secret:', error);
-    //   });
-    
-    // Dummy code for posting secret
-    console.log('Posting secret:', newSecret);
+    axios.post('http://localhost:5000/post-plaintext', { plaintext: newSecret })
+      .then(response => {
+        if (response.status === 200) {
+          setOriginalSecrets([...originalSecrets, newSecret]); 
+          setEncryptedSecrets([...encryptedSecrets, response.data]); 
+        } else {
+          console.error('Failed to post secret');
+        }
+      })
+      .catch(error => {
+        console.error('Error posting secret:', error);
+      });
+
     setNewSecret('');
   };
-  
-  
+
+
   return (
-    <Container  maxWidth="sm">
-     <Box sx={{ mb: 4, display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: "4.8rem" }}>
-  <VpnKeyIcon sx={{ fontSize: 80 }} />
-  <Typography variant="h3" gutterBottom component="div">
-    Secrets
-  </Typography>
-  <Typography variant="body1">
-    Share your secrets safely!
-  </Typography>
-</Box>
+    <Container maxWidth="sm">
+      <Box sx={{ mb: 4, display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: "4.8rem" }}>
+        <VpnKeyIcon sx={{ fontSize: 80 }} />
+        <Typography variant="h3" gutterBottom component="div">
+          Secrets
+        </Typography>
+        <Typography variant="body1">
+          Share your secrets safely!
+        </Typography>
+      </Box>
 
       <Grid container spacing={4}> {/* Grid container for secret sections */}
         <Grid item xs={12} md={6}> {/* Left section for original secrets */}
@@ -101,7 +85,7 @@ function Secrets() {
         </Grid>
       </Grid>
 
-      <Box sx={{marginBottom:"2rem"}} mt={4}> {/* Section for posting new secret */}
+      <Box sx={{ marginBottom: "2rem" }} mt={4}> {/* Section for posting new secret */}
         <Card>
           <CardContent>
             <Typography variant="h6" gutterBottom>
@@ -125,7 +109,5 @@ function Secrets() {
     </Container>
   );
 }
-      
-export default Secrets;
 
-    
+export default Secrets;
