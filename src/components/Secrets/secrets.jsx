@@ -7,6 +7,7 @@ function Secrets() {
   const [originalSecrets, setOriginalSecrets] = useState([]);
   const [encryptedSecrets, setEncryptedSecrets] = useState([]);
   const [newSecret, setNewSecret] = useState('');
+  const [key, setKey] = useState('');
 
   useEffect(() => {
     // Dummy data for original secrets
@@ -19,8 +20,9 @@ function Secrets() {
   }, []);
 
   const handleSubmit = (e) => {
+  
     e.preventDefault();
-    axios.post('http://localhost:5000/post-plaintext', { plaintext: newSecret })
+    axios.post('http://localhost:5000/post-plaintext', { plaintext: newSecret, key: key })
       .then(response => {
         if (response.status === 200) {
           setOriginalSecrets([...originalSecrets, newSecret]); 
@@ -34,6 +36,7 @@ function Secrets() {
       });
 
     setNewSecret('');
+    setKey('');
   };
 
 
@@ -49,7 +52,52 @@ function Secrets() {
         </Typography>
       </Box>
 
-      <Grid container spacing={4}> {/* Grid container for secret sections */}
+      <Box sx={{ marginBottom: "2rem" }} mt={4}> {/* Section for posting new secret */}
+        <Card>
+          <CardContent>
+            <Typography variant="h6" gutterBottom>
+              Post a New Secret
+            </Typography>
+            <form onSubmit={handleSubmit}>
+            <TextField
+                label="Key"
+                variant="outlined"
+                fullWidth
+                value={key}
+                onChange={(e) => setKey(e.target.value)}
+                sx={{ mt: 1, marginBottom:"1rem" }}
+              />
+              <TextField
+                label="Your secret here"
+                variant="outlined"
+                fullWidth
+                value={newSecret}
+                onChange={(e) => setNewSecret(e.target.value)}
+                sx={{ mt: 1, marginBottom:"0.5rem" }}
+              />
+             
+             <Button
+                variant="contained"
+                type="submit"
+                sx={{
+                  mt: 1,
+                  marginBottom: "0.2rem",
+                  backgroundColor: "black",
+                  "&:hover": {
+                    backgroundColor: "#4C4C4C",
+                  },
+                }}
+              >
+                Submit
+              </Button>
+
+            </form>
+          </CardContent>
+        </Card>
+      </Box>
+
+      <Grid  container spacing={4} sx={{ mt: 1, marginBottom:"5rem" }}
+> {/* Grid container for secret sections */}
         <Grid item xs={12} md={6}> {/* Left section for original secrets */}
           <Card>
             <CardContent>
@@ -85,27 +133,7 @@ function Secrets() {
         </Grid>
       </Grid>
 
-      <Box sx={{ marginBottom: "2rem" }} mt={4}> {/* Section for posting new secret */}
-        <Card>
-          <CardContent>
-            <Typography variant="h6" gutterBottom>
-              Post a New Secret
-            </Typography>
-            <form onSubmit={handleSubmit}>
-              <TextField
-                label="Your secret here"
-                variant="outlined"
-                fullWidth
-                value={newSecret}
-                onChange={(e) => setNewSecret(e.target.value)}
-              />
-              <Button variant="contained" type="submit" sx={{ mt: 2 }}>
-                Submit
-              </Button>
-            </form>
-          </CardContent>
-        </Card>
-      </Box>
+   
     </Container>
   );
 }
