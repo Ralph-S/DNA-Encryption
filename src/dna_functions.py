@@ -44,6 +44,12 @@ def binary_to_dna(binary_input):
     
     return dna_sequence
 
+def dna_to_binary(dna_input):
+    dna_to_bin = {'A': '00', 'C': '01', 'G': '10', 'T': '11'}
+    bin_sequence = ''.join(dna_to_bin[dna_input[i:i+1]] for i in range(0, len(dna_input)))
+    
+    return bin_sequence
+
 def dna_xor(dna1, dna2):
     inverse_map = {'A': 'T', 'T': 'A', 'C': 'G', 'G': 'C'}
     # Rule 1
@@ -64,6 +70,15 @@ def dna_xor(dna1, dna2):
         return inverse_map[dna1]
 
     return 'Error'
+
+def bin_xor(str1,str2):
+    answer = ''
+    for i in range(0,len(str1)):
+        if (str1[i] == '0' and str2[i] == '0') or (str1[i] == '1' and str2[i] == '1'):
+            answer += '0'
+        else:
+            answer += '1'
+    return answer
 
 def move_pointer(dna_input):
     first_character_moves = {"A":0,"C":4,"G":8,"T":12}

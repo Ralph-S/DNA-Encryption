@@ -5,18 +5,21 @@ key = "AGGTCTTGACCCACCGAGGAGGTGTCAGGGCGGGGTTTCTACCCGAGAAAGCTATTCATTATTA"
 
 # Example usage
 text_input = "This is our testing text for AES-DNA encryption"
-binary_blocks = text_to_128bit_binary_blocks(text_input)
+#binary_blocks = text_to_128bit_binary_blocks(text_input)
 dna_input = []
-for ele in binary_blocks:
-    x = binary_to_dna(ele)
-    dna_input.append(x)
+# for ele in binary_blocks:
+#     x = binary_to_dna(ele)
+#     dna_input.append(x)
+z = "ATAGCAATTTCGGGGAGAGACCGGATAAGATCATACATACGCGAGGAGTGAAATCTAACTATCA"
+dna_input.append(z)
+print(dna_input)
     
 
 dna_key = key
 
 #dna_key = binary_to_dna(binary_key)
 print(f"DNA Key: {dna_key}")
-rounds=1
+rounds=10
 keys_list=[]
 res1=""
 res2=""
@@ -33,26 +36,23 @@ for i in range(1,rounds+1):
         res3=result[2]
         res4=result[3]
         prev = res1+res2+res3+res4
-        print(prev + "\n")
+        keys_list.append(prev)
     else:
-        #break
         result = key_expansion(prev,str(i),res1,res2,res3,res4)
         res1=result[0]
         res2=result[1]
         res3=result[2]
         res4=result[3]
         prev = res1+res2+res3+res4
-        print(prev + "\n")
+        keys_list.append(prev)
 
-
+print(keys_list)
 print("#######################################################")
 
 input_matrix = [['' for _ in range(4)] for _ in range(4)]
 key_matrix = [['' for _ in range(4)] for _ in range(4)]
 state_input = fill_matrix(input_matrix,dna_input[0])
 state_key = fill_matrix(key_matrix,key)
-print(state_input)
-print(state_key)
 
 xored_matrix = [['' for _ in range(4)] for _ in range(4)]
 for i in range(len(input_matrix)):
@@ -65,17 +65,19 @@ for i in range(len(input_matrix)):
             second = block2[k:k+1]
             xored += dna_xor(first,second)
         xored_matrix[i][j] = xored
-
 print(xored_matrix)
-
+x = [['' for _ in range(4)] for _ in range(4)]
 prev = ""
 for r in range(1,rounds+1):
+    print(f"Round: {r}")
     subbed_matrix = [['' for _ in range(4)] for _ in range(4)]
     rotated_matrix = [['' for _ in range(4)] for _ in range(4)]
     for i in range(0,len(input_matrix)):
         for j in range(len(input_matrix[0])):
             if r == 1:
                 prev = xored_matrix[i][j]
+            else:
+                prev = x[i][j]
             subbed_matrix[i][j] = get_substitution(prev)
         if i==0:
             val = ''.join(subbed_matrix[i])
@@ -91,4 +93,25 @@ for r in range(1,rounds+1):
             rotated = val[12:] + val[:12]
         result = [rotated[k:k+4] for k in range(0,len(rotated),4)]
         rotated_matrix[i] = result
-        
+    print(rotated_matrix)
+    if r!=10:
+        mixed = mix_columns(rotated_matrix)
+    print(mixed)
+
+    round_output = [['' for _ in range(4)] for _ in range(4)]
+    round_key_matrix = [['' for _ in range(4)] for _ in range(4)]
+    round_key = keys_list[r-1]
+    round_key_matrix = fill_matrix(round_key_matrix,round_key)
+    print(round_key_matrix)
+    for i in range(0,len(mixed)):
+        for j in range(len(mixed[0])):
+            block1 = mixed[i][j]
+            block2 = round_key_matrix[i][j]
+            xored = ""
+            for k in range(0,len(mixed[i][j])):
+                first = block1[k:k+1]
+                second = block2[k:k+1]
+                xored += dna_xor(first,second)
+            round_output[i][j] = xored
+    print(round_output)
+    x = round_output

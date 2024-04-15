@@ -1,4 +1,13 @@
-val = "abcdefghijklmnop"
-rotated = val[12:] + val[:12]
+from dna_functions import bin_xor
 
-print(rotated)
+pol = [['02','03','01','01'],
+        ['01','02','03','01'],
+        ['01','01','02','03'],
+        ['03','01','01','02'],]
+
+index = 1
+
+column = [row[index] for row in pol]
+
+cols = ''.join(str(item) for item in column)
+
