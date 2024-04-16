@@ -1,0 +1,41 @@
+/* App.css
+
+/* Apply styles to the body and HTML to ensure the container takes up the entire viewport */
+body, html {
+  height: 100%;
+  margin: 0;
+}
+
+/* Center the container vertically and horizontally */
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+/* Center the content horizontally */
+.centered {
+  text-align: center;
+}
+
+/* Secrets section */
+.secret-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.secret-list li {
+  margin-bottom: 8px;
+}
+
+/* Form styling */
+.form-group {
+  margin-bottom: 16px;
+}
+
+/* Button styling */
+.MuiButton-root {
+  margin-top: 16px;
+} 
