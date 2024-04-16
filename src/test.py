@@ -1,9 +1,5 @@
 from dna_functions import *
 from aes_functions import *
 
-DNA = "ACTG"
-bin = dna_to_binary(DNA)
-
-output = binary_to_dna(bin)
-
-print(output)
+hex = '2B 7e 15 16 28'
+print(binary_to_dna(hex_to_binary(hex)))

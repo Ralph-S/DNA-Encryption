@@ -30,6 +30,13 @@ R_con={
     "10":"ATCGAAAAAAAAAAAA"
 }
 
+def hex_to_binary(hex_string):
+    hex_values = hex_string.split()
+    binary_values = [bin(int(h,16))[2:].zfill(8) for h in hex_values]
+    binary_string = ''.join(binary_values)
+    
+    return binary_string
+
 def text_to_128bit_binary_blocks(text):
     binary_data = ''.join(format(ord(char), '08b') for char in text)
     padding_length = 128 - (len(binary_data) % 128)
