@@ -11,11 +11,14 @@ function Secrets() {
 
   useEffect(() => {
     // Dummy data for original secrets
-    const dummyOriginalSecrets = ['Original Secret 1', 'Original Secret 2', 'Original Secret 3'];
+    const dummyOriginalSecrets = ['Hello World! This is a test of our Application, Hope you enjoy!'];
     setOriginalSecrets(dummyOriginalSecrets);
 
     // Dummy data for encrypted secrets
-    const dummyEncryptedSecrets = ['Encrypted Secret 1', 'Encrypted Secret 2', 'Encrypted Secret 3'];
+    const dummyEncryptedSecrets = [
+      'CTCTTTAACCGTTCGTGATGGTCACAACGGTAATTTATTATTTGAAGCAGGTGGCGAGAGCCAC',
+      'CTCTTTAACCGTTCGTGATGGTCACAACGGTAATTTATTATTTGAAGCAGGTGGCGAGAGCCACCTCTTTAACCGTTCGTGATGGTCACAACGGTAATTTATTATTTGAAGCAGGTGGCGAGAGCCAC'
+    ];
     setEncryptedSecrets(dummyEncryptedSecrets);
   }, []);
 
@@ -32,8 +35,8 @@ function Secrets() {
     axios.post('http://localhost:5000/process-data', { plaintext: newSecret, key: key })
       .then(response => {
         if (response.status === 200) {
-          setOriginalSecrets([...originalSecrets, newSecret]); 
-          setEncryptedSecrets([...encryptedSecrets, response.data]); 
+          setOriginalSecrets([...originalSecrets, newSecret]);
+          setEncryptedSecrets([...encryptedSecrets, response.data]);
         } else {
           console.error('Failed to post secret');
         }
@@ -47,7 +50,7 @@ function Secrets() {
   };
 
   return (
-    <Container maxWidth="sm">
+    <Container maxWidth="md">
       <Box sx={{ mb: 4, display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: "4.8rem" }}>
         <VpnKeyIcon sx={{ fontSize: 80 }} />
         <Typography variant="h3" gutterBottom component="div">
@@ -58,7 +61,7 @@ function Secrets() {
         </Typography>
       </Box>
 
-      <Box sx={{ marginBottom: "2rem" }} mt={4}> {/* Section for posting new secret */}
+      <Box sx={{ marginBottom: "2rem" }} mt={4}>
         <Card>
           <CardContent>
             <Typography variant="h6" gutterBottom>
@@ -77,6 +80,8 @@ function Secrets() {
                 label="Your secret here"
                 variant="outlined"
                 fullWidth
+                multiline
+                rows={4} // Adjust the number of rows as needed
                 value={newSecret}
                 onChange={(e) => setNewSecret(e.target.value)}
                 sx={{ mt: 1, marginBottom:"0.5rem" }}
@@ -100,8 +105,8 @@ function Secrets() {
         </Card>
       </Box>
 
-      <Grid container spacing={4} sx={{ mt: 1, marginBottom:"5rem" }}> {/* Grid container for secret sections */}
-        <Grid item xs={12} md={6}> {/* Left section for original secrets */}
+      <Grid container spacing={4} sx={{ mt: 1, marginBottom:"5rem" }}>
+        <Grid item xs={12} md={6}>
           <Card>
             <CardContent>
               <Typography variant="h6" gutterBottom>
@@ -118,13 +123,13 @@ function Secrets() {
           </Card>
         </Grid>
 
-        <Grid item xs={12} md={6}> {/* Right section for encrypted secrets */}
+        <Grid item xs={12} md={6}>
           <Card>
             <CardContent>
               <Typography variant="h6" gutterBottom>
                 Encrypted Secrets
               </Typography>
-              <List dense={true}>
+              <List dense={true} sx={{ maxHeight: '200px', overflow: 'auto' }}> {/* Adjust the maxHeight as needed */}
                 {encryptedSecrets.map((secret, index) => (
                   <ListItem key={index} sx={{ paddingY: 1 }}>
                     <ListItemText primary={secret} />
