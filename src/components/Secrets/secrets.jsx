@@ -20,9 +20,16 @@ function Secrets() {
   }, []);
 
   const handleSubmit = (e) => {
-  
     e.preventDefault();
-    axios.post('http://localhost:5000/post-plaintext', { plaintext: newSecret, key: key })
+
+    // Validate key length
+    const formattedKey = key.replace(/\s/g, ''); // Remove spaces
+    if (formattedKey.length !== 32) {
+      alert('Please provide a key that is exactly 32 characters long (and spaces in between each 2 characters).');
+      return;
+    }
+
+    axios.post('http://localhost:5000/process-data', { plaintext: newSecret, key: key })
       .then(response => {
         if (response.status === 200) {
           setOriginalSecrets([...originalSecrets, newSecret]); 
@@ -38,7 +45,6 @@ function Secrets() {
     setNewSecret('');
     setKey('');
   };
-
 
   return (
     <Container maxWidth="sm">
@@ -59,8 +65,8 @@ function Secrets() {
               Post a New Secret
             </Typography>
             <form onSubmit={handleSubmit}>
-            <TextField
-                label="Key"
+              <TextField
+                label="Key (e.g: AB CD 12 34 56 EF GH 78 AB CD 12 34 56 EF GH 78)"
                 variant="outlined"
                 fullWidth
                 value={key}
@@ -75,8 +81,7 @@ function Secrets() {
                 onChange={(e) => setNewSecret(e.target.value)}
                 sx={{ mt: 1, marginBottom:"0.5rem" }}
               />
-             
-             <Button
+              <Button
                 variant="contained"
                 type="submit"
                 sx={{
@@ -90,14 +95,12 @@ function Secrets() {
               >
                 Submit
               </Button>
-
             </form>
           </CardContent>
         </Card>
       </Box>
 
-      <Grid  container spacing={4} sx={{ mt: 1, marginBottom:"5rem" }}
-> {/* Grid container for secret sections */}
+      <Grid container spacing={4} sx={{ mt: 1, marginBottom:"5rem" }}> {/* Grid container for secret sections */}
         <Grid item xs={12} md={6}> {/* Left section for original secrets */}
           <Card>
             <CardContent>
@@ -132,8 +135,6 @@ function Secrets() {
           </Card>
         </Grid>
       </Grid>
-
-   
     </Container>
   );
 }
