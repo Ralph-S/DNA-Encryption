@@ -13,13 +13,11 @@ dna_input = []
 z = "ATAGCAATTTCGGGGAGAGACCGGATAAGATCATACATACGCGAGGAGTGAAATCTAACTATCA"
 dna_input.append(z)
 print(dna_input)
-    
 
 dna_key = key
 
-#dna_key = binary_to_dna(binary_key)
 print(f"DNA Key: {dna_key}")
-rounds=10
+rounds=1
 keys_list=[]
 res1=""
 res2=""
@@ -46,8 +44,8 @@ for i in range(1,rounds+1):
         prev = res1+res2+res3+res4
         keys_list.append(prev)
 
-print(keys_list)
-print("#######################################################")
+print(f"Key 1: {keys_list[0]}")
+print("#"*100)
 
 input_matrix = [['' for _ in range(4)] for _ in range(4)]
 key_matrix = [['' for _ in range(4)] for _ in range(4)]
@@ -66,6 +64,7 @@ for i in range(len(input_matrix)):
             xored += dna_xor(first,second)
         xored_matrix[i][j] = xored
 print(xored_matrix)
+
 x = [['' for _ in range(4)] for _ in range(4)]
 prev = ""
 for r in range(1,rounds+1):
@@ -93,7 +92,7 @@ for r in range(1,rounds+1):
             rotated = val[12:] + val[:12]
         result = [rotated[k:k+4] for k in range(0,len(rotated),4)]
         rotated_matrix[i] = result
-    print(rotated_matrix)
+    print(f"rotated_matrix: {rotated_matrix}")
     if r!=10:
         mixed = mix_columns(rotated_matrix)
     print(mixed)
@@ -102,7 +101,6 @@ for r in range(1,rounds+1):
     round_key_matrix = [['' for _ in range(4)] for _ in range(4)]
     round_key = keys_list[r-1]
     round_key_matrix = fill_matrix(round_key_matrix,round_key)
-    print(round_key_matrix)
     for i in range(0,len(mixed)):
         for j in range(len(mixed[0])):
             block1 = mixed[i][j]

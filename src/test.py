@@ -1,13 +1,9 @@
-from dna_functions import bin_xor
+from dna_functions import *
+from aes_functions import *
 
-pol = [['02','03','01','01'],
-        ['01','02','03','01'],
-        ['01','01','02','03'],
-        ['03','01','01','02'],]
+DNA = "ACTG"
+bin = dna_to_binary(DNA)
 
-index = 1
+output = binary_to_dna(bin)
 
-column = [row[index] for row in pol]
-
-cols = ''.join(str(item) for item in column)
-
+print(output)
