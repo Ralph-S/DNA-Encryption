@@ -1,0 +1,38 @@
+.btn--primary {
+    background-color: var(--primary);
+  }
+  
+  .btn {
+    height: 48px;
+    width: 240px;
+    text-decoration: none;
+    font-size: 1.15em;
+    font-weight: 650;
+    padding: 8px 20px;
+    border-radius: 4px;
+    outline: none;
+    border: none;
+    cursor: pointer;
+    /* background: #ffba08; */
+    background: linear-gradient(
+      90deg,
+      rgb(0, 255, 242) 0%,
+      rgb(0, 174, 255) 100%
+    );
+    color: #24262b;
+    margin-right: 15px;
+  }
+  
+  .btn:hover {
+    padding: 8px 20px;
+    transition: all 0.3s ease-out;
+    color: #f9f9f9;
+    /* background: #ffff; */
+    /* color:#f48c06; */
+    background: linear-gradient(
+      90deg,
+      rgb(17, 0, 255) 0%,
+      rgb(0, 132, 255) 100%
+    );
+    transition: all 0.4s ease-out;
+  }
